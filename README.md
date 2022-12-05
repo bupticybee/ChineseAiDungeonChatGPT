@@ -1,5 +1,7 @@
 # 中文版本的ai地牢（基于ChatGPT版本）
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bupticybee/ChineseAiDungeonChatGPT/blob/main/ExampleStory.ipynb)
+
 ![](outputs/story.gift)
 
 ## 介绍
