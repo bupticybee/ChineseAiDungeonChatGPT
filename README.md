@@ -2,7 +2,7 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bupticybee/ChineseAiDungeonChatGPT/blob/main/Example.ipynb)
 
-![story](outputs/story.gift)
+![storysample](outputs/story.gift)
 
 ## 介绍
 
