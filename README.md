@@ -1,6 +1,6 @@
 # 中文版本的ai地牢（基于ChatGPT版本）
 
-![](outputs/story.gift)
+![story](outputs/story.gift)
 
 ## 介绍
 
