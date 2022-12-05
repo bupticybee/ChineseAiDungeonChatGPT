@@ -2,7 +2,7 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bupticybee/ChineseAiDungeonChatGPT/blob/main/Example.ipynb)
 
-![](outputs/story.gift)
+![story](outputs/story.gift)
 
 ## 介绍
 
@@ -16,7 +16,7 @@
 
 直接下载项目，然后
 ```shell
-pip install -r requirements.txt
+pip3 install revChatGPT --upgrade
 ```
 安装依赖
 
@@ -101,4 +101,4 @@ python3 example_story.py
 
 1. err TypeError: 'generator' object is not subscriptable
 
-见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，大概率需要自己申请openai账号，并且按照上文拿到token，可能一个人的账号openai做了限制不太能多个人用
+见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，尝试`pip3 install revChatGPT --upgrade`升级依赖
