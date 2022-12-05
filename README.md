@@ -94,3 +94,9 @@ python3 example_story.py
 方，可以和家人朋友团聚。你决定把这次经历写成日记，留作纪念。你感到非常开心，觉得自己更加坚强了。你决
 定继续冒险，寻找更多未知的世界。
 ```
+
+## 常见问题
+
+1. err TypeError: 'generator' object is not subscriptable
+
+见 #1 ，大概率需要自己申请openai账号，并且按照上文拿到token，可能一个人的账号openai做了限制不太能多个人用
