@@ -1,5 +1,7 @@
 from tkinter import *
+from tkinter.ttk import Progressbar
 from story import StoryTeller
+import threading
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -11,15 +13,41 @@ bot_name = "ChatGBT"
 
 config = {
     "Authorization": "<API-KEY>",  # This is optional
-    "session_token": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..MISh5V60Gcipu31t.t3f0RfS2WtIovZ5zPxGQfxz25V4ZmfsbLsYNoIJ8OU9ErlCbgjBFm7VkHOhg0wKQk08t99g-ka2UtRcNP6q4hOCO8D15GwtrY5mah4n_6uh90Lo_912DDD_IrXX5GU89ce3aMRDae8CRxVeXhOHRX1zOARL6KxClNdVaWIPCWtNeUvSrxxQEesu9bSb2jBTqU5MSqFUrkLjyYRr6H8Ucc-S_4uJVt8Rul0MYTe8gRRRehuAQOoy85UnCTS-0InWJEpwQFgL8d5XfY2R-RjG6rj-W-QrKAd49QyTm7XoGUXZ7unRn7rnxQAT5ROvIkUzbtR0fTc0zRjjhfJyPMPJnBIx7cOvmdj4LzW2SdId3HzfLbvGG4IXCaf0eIi3J8Q6IjcSbdvo5uY4gg6XJ65JEf-w0rVHY-2wBy70oQ4eRZwsyqSkI8Xt8-KdgW5Xs6HTrVEiOYy_saJy2qMPuZ8lW8ic8yK3THsMT-wCOpzEZvwwVeUhoJi9ZW4n9SsUBgiQh3pEqJ_Bm6QuARhSR2OxDRVXgXP71k9vFvyT2t0XkXZmC-x1S_ppGf9Y2g0YtFad7j4MQMGzlvACcb6I_5rdiBdxUsbE_U63g7c8t9S8d38WWuQKSC3wUi9TT5HcUdjLrEdYUawB39Eg7Gu6VvUacNXeEARlY0CSuSeiRkyk9b9P_-fMyhrRMWz_Yf_rneDM9OmRtaTIEW2XSBHmLN3FRylpLi-gQhIh-O2HCGlmpNyiOMuRuT0V1hrlEAnoFKiR4fHiIVK30jM-zhZ4Yi5XdM5h2fCrS-gpH4zYdP-1fJwFMG5cbElhTZJ9-Vjf4UsYfYdDS0pIBMXwQNu9s4xxn-McnORiWXpaniqRzDbUezlmvVFgeNmZYuBBryiyUKqrllfbmQjYV8sRCAqnUq2Dgzo3SqsxyVQoeadIWLkrVUDeXn8c2aDaWDmU03QYFgRd3Ga3-sD3qz5-7AW0YXnhZnIKfB63MRzD2wG6ycH8D1UEKJN9IcwdQcMuwbtMydDj2gQjh0g3eabC9dBXzvyaORW2QLMw2Uj7KbIPwRneUxpNaTQMb2b3gfD_q3I_gZ_Qn-sETmUjPtk90YzAtnFrKA3Lldr9rAiKBUoWz7oqoknG1i2q9yMiScWN3S43fwspEb0woGp-qqcJMHyTPltZMwUiT1LZqU3PlpVF1fHCv4WXTsBgjSYjXY-F5BlQRCo0AC4y1kOwoKn8QfewqbfIBRzrlgOKemuXqweCOFbDmleVWI8zXn45guO-PvAoD9G6E6qlOHGw6tGHMhRL4wXcKQQ9f8VuK26VR5exlrARtbf_UQRCTeSl70LRyAcltwIth9VTTbjfRCheSk-MNp-gee1w9tGDtlt-iL7BzQ5SFnRgTAIS_9hzAT1ry6Bvk0e2RUBMqy0P9u5zFklFDpk9rRvz0H8oDtJp9u6V5b3P0FdRyC6p-1J_ugLJrfLreu5GrpCKrLbn1BxQHoH80pGLrbFU_d34bg3RJZr04Ky-1b3LE1nGF4Wn2d24ny1ERL9Bii8XbaeHk40367xOKaaxS4mvNRCleFYQOxG5P1ofwojtR2JkZbw1VQjrdU8f55WoSSrXnB8ovW-UB5EJxT4G3XgDAPSfTcPojHInw4stw3W4XEqBpFKAvS89Aif8GxgCmEU56CNFOI6KoNlte0Y8tpAMpP9B1TmOjON2_Fzhvd0Qy5cSTyKO3HV6_f4XxsXljcFy19_2o-mDZ1K5tZFKEkqfJwYQYzBQHIvxopA6_pZxNdx_J1up6HpfCoOK0-g-Ah_kIM-vu97w0LyWV000BZe48QtF3Rx5DO8KzzbJHAt6M2u7tXHNYELzASlthVplpef5xZ_nvtzp3DWz7yFOskz1b-Ov89ihdpXIF7UZ79j4vMud_24TgS5eGVS4IkWRyLPp_W9IJzpQRXxCnQZKfhk3vO4eDjfQ-AdU0s00b7iN7pz95-VlvMQ-NoFHovDfk0eNZHiCClaTFxGcNTK6yb9jKl-oem7dh21rES1dAkX8P1Pf5JASkXkD5O2iLRdIOS4ivpkRSFw.vSeayrACGp3DiZvhWuflXQ"
+    "session_token": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..G1DA27klUIERIXs8.-ewpFWYSrJvoByWvJdx6OtjdVneHZsvHP7oVhLNoJh5K5tOYXvHB0IFczhgsBzei2MRx43Yi4uRyGpxIArMGgaJ7i1cKvoZJ0259UapG10IS21R5tTB-oLdhP_9-fI19Q_jJyn2vNHyf0Efe0jSMhbPbbTltZWP-xkyDuKqfY1wi_K1L5ysJ8FlJ5hLyN4s87OpELm_KgsyPCLJxWA8unFfGmFUUV0-o5P_q6y-iTO1_9EA9y9I98xxJ9qorwbTF4_DoqluFRvMkl4W0i9IJlOEMRTay-xqfof4wnPEhH2xqGEeBfeuV_dKputPIkpZ6FEUdbu47FuPGxQFig3AblUM0J57QcV5MfJLgs0umxWK49DIcRwjceSpa6iYkeLjTtV1VbVPiodwjBNRrnnpE7wtq3-2r3pSiexQUo0DuOqpNbZRr3A37cvUuiZFgM--G0_3QIcqy7blz5DMSA-thpPEhIQu3aoaS78M4wa-wuVYRFxC3IqI3iXiortmLpKAhoh2zVSTyuwNw-unm3J70rbgic3diBUrvi9K4vOLSLNVQUqZvyCsDSCTDoFWcGZGNdYqboOA1nll22wTc_CoTtbRGObP3N3BiH4OjZmQ11ZCBGySQz5EXoWgzNxjLVtehWneaFKar6gFAEW-_m7oF9-9DldHHMAb3Gk6RTn6X0oAaWCvNk-X3sNoEBzBVMnTADEpE-Stu3f7UEQ7IssyAIasQEpt43fyXvr-kSLM_G8IDs-8PyWYScoBJtIFANdAD9hdrm7X9jt21IXJ8WcLHxcIF2g0T0OnA_t7s1nIOi1TK1-Db79UrGGxFT3kk08VyB3zx_s2XSjGGZG6YL1TryTfFZINaFhfcymiwZO_9eYMc8vAn5NPY1DcZo7CzcYu3OvcdUyYewf3Ktao75qJeMt5xWvYyre_wdICExxJBj4HCj-hwv4xakeP5X1laVyfBlsTtAnySyIDORU3vJosKqfPdKg_4pXfHFLz-I-uEogy2Ywy_GKRnQwTOGS5UmAeuclDDedqeUY5F0fzOTZigSchRSjb6RCQT2fafAiMbxyx7ix6AKVpiPVDpNTg7rP-DoxQaLnJS4z3DMzTFmcr_ey8xQsBAZv94YAJ1EKGz0DayhEjfqIfR_S-hWZjezTZb1hMFf5fXlyq49F4nImM1ETdgVvLXd4XljwaSDr68h_wRsG8UlxLuN1hbM0bQIsXd0tubCkhf8r8dMAq5TfWEsBG1diNRJXG26UneOoHi83O_YuidW9OO0mwuov1eTBWSA0b06AAPjxxRriuceIOJs33Ofz9rl2rDm7USn_nmVH5BgfScY1SU1-ODRol4TYap-OLjfi9-3dwsqQc_lzAsf1dQFtsGLJv10CgXdgj5jXh6M2ttRHiBOW5yj-csLHzTdUAa1fB5Al1exHIX94u_mHIVafItFD-TXwZFCHlIuc5AqPUrGpR3tJtIeNvWFgmgN1KDMLd0l_ryzL_t-alSIMNg4sTrVNdwhY-k2l3EdlsoChFkkfLQykoIT832tci_aIO1n2RoCNayQGFXxbbOQGmD9bIHSq6sLdae0C5zb08K_6ioXy6EnnYd0V1QzsHDpwUyxQO8D3w1gPq_tBXXso0MYzCwSMBfIpdi7QkZw62-AguRl1pRW0nQZsBeyhL9McUqNxeyokGYxGt1gt6_0Re3cdzqC7AoLMv9s2pPBx-jdVbC38n71mzmYdCcFUDUJYPFWkY2aXmDo57lZsf77TpbIoSAwPmQ7FrOL1gru2Q8vOtLfFTwBLDOerOVLhYemTsIpueSF0Qb0FFbwvJy5a-QfF13yHQ-8mG-utt5wamYqjRD-8Emh6fkvj4OJPeGk-dQzf68jI_1VY75TXaDyT5EijYY4AAZ1BSQ-4NyWM44h1Trhog2EIdsSMNIrZdAzm7rZrzMFUAHaeTnnBDYnA1c-kO5HKqht_lhvP3-cfO9gzI3EU-ix4xQIalI2xZ3EdmWBcfI5GexxDR7S48pO1zfBRPUVw4wk7pltcUyv7uaJP4Q8CSfHSfP1IiQh6ZU9YRjf1Cplw.bLXZLMTt2uyt4Ri1LpFd3A"
 }
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 
 
+def thread_it(func, *args):
+    # 创建
+    t = threading.Thread(target=func, args=args)
+    # 守护进程
+    t.setDaemon(True)
+    # 启动
+    t.start()
+    # t.join()
+
+
+def format_form(form, width, height):
+    """设置居中显示"""
+    # 得到屏幕宽度
+    win_width = form.winfo_screenwidth()
+    # 得到屏幕高度
+    win_height = form.winfo_screenheight()
+
+    # 计算偏移量
+    width_adjust = (win_width - width) / 2
+    height_adjust = (win_height - height) / 2
+
+    form.geometry("%dx%d+%d+%d" % (width, height, width_adjust, height_adjust))
+
+
 class ChatApplication:
 
     def __init__(self, story_teller, background):
+        self.bar = None
+        self.wait_window = None
         self.story_teller = story_teller
         self.background = background
         self.window = Tk()
@@ -70,9 +98,31 @@ class ChatApplication:
 
         # send button
         send_button = Button(bottom_label, text="发送", font=FONT_BOLD, width=20, bg=BG_GRAY,
-                             command=lambda: self._on_enter_pressed(None))
+                             command=lambda: thread_it(self._on_enter_pressed, None))
         send_button.place(relx=0.87, rely=0.008, relheight=0.06, relwidth=0.12)
         self._init_background(self.background)
+        # self.start_toplevel_window()
+
+    def start_toplevel_window(self):
+        # toplevel
+        self.wait_window = Toplevel()
+        self.wait_window.resizable(width=False, height=False)
+        format_form(self.wait_window, 300, 50)
+        self.wait_window.title("正在获取ChatGPT回复")
+        self.wait_window.wm_attributes("-topmost", True)
+
+        # progressbar
+        self.bar = Progressbar(self.wait_window, length=250, mode="indeterminate",
+                               orient=HORIZONTAL)
+        self.bar.pack(expand=True)
+        self.bar.start(10)
+
+    def close_toplevel_window(self):
+        if self.wait_window is not None:
+            self.wait_window.destroy()
+
+        self.wait_window = None
+        self.bar = None
 
     def _init_background(self, background):
         if not background:
@@ -85,7 +135,9 @@ class ChatApplication:
 
     def _on_enter_pressed(self, event):
         msg = self.msg_entry.get()
+        threading.Thread(target=self.start_toplevel_window()).start()
         self._insert_message(msg, "你")
+        self.close_toplevel_window()
 
     def _insert_message(self, msg, sender):
         if not msg:
