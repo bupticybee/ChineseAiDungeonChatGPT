@@ -113,3 +113,7 @@ python3 app.py
 1. err TypeError: 'generator' object is not subscriptable
 
 见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，尝试`pip3 install revChatGPT --upgrade`升级依赖
+
+2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
+
+一般是接口太多人调用挂了，等openai修复就好
