@@ -15,6 +15,7 @@ bot_name = "故事"
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 
+
 def thread_it(func, *args):
     # 创建
     t = threading.Thread(target=func, args=args)
@@ -87,10 +88,12 @@ class ChatApplication:
         self.pre_text.place(relwidth=0.10, relheight=0.06, rely=0.008)
 
         # message entry box
-        self.msg_entry = Entry(bottom_label, bg="#2C3E50", fg=TEXT_COLOR, font=FONT)
-        self.msg_entry.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.111)
+        self.msg_entry = Entry(bottom_label, bg="#2C3E50",
+                               fg=TEXT_COLOR, font=FONT)
+        self.msg_entry.place(relwidth=0.74, relheight=0.06,
+                             rely=0.008, relx=0.111)
         self.msg_entry.focus()
-        self.msg_entry.bind("<Return>", self._on_enter_pressed)
+        self.msg_entry.bind("<Return>", self._on_return)
 
         # send button
         send_button = Button(bottom_label, text="发送", font=FONT_BOLD, width=20, bg=BG_GRAY,
@@ -98,6 +101,9 @@ class ChatApplication:
         send_button.place(relx=0.87, rely=0.008, relheight=0.06, relwidth=0.12)
         self._init_background(self.background)
         # self.start_toplevel_window()
+
+    def _on_return(self, event):
+        thread_it(self._on_enter_pressed, None)
 
     def start_toplevel_window(self):
         # toplevel
