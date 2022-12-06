@@ -25,7 +25,18 @@ pip3 install revChatGPT --upgrade
 python3 example_story.py
 ```
 
-就可以运行起来
+就可以在命令行运行起来
+
+你也可以通过
+
+```shell
+python3 app.py
+```
+
+调出一个app界面运行。
+
+![](outputs/example_chatgpt_app.png)
+
 
 ## 须知
 
@@ -38,7 +49,7 @@ python3 example_story.py
 3. token过期
 4. openai封了接口，或者接口收费了等等
 
-在这种情况出现时，大家需要自备梯子，并且按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 的说明，获取token。
+在这种情况出现时，大家需要自备梯子，并且按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 的说明填写config.py。
 
 几个我自己玩的故事见outputs文件夹，总体感觉非常震撼，大家可以参考。
 
@@ -102,3 +113,7 @@ python3 example_story.py
 1. err TypeError: 'generator' object is not subscriptable
 
 见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，尝试`pip3 install revChatGPT --upgrade`升级依赖
+
+2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
+
+一般是接口太多人调用挂了，等openai修复就好
