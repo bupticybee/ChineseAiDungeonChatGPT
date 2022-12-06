@@ -125,6 +125,7 @@ class ChatApplication:
         format_form(self.login, 300, 100)
         self.login.title("登陆")
         self.login.wm_attributes("-topmost", True)
+        self.login.protocol("WM_DELETE_WINDOW", self._on_cancel_login)
 
         # email input
         self.email = Label(self.login, text="邮箱：")
@@ -143,8 +144,12 @@ class ChatApplication:
                                 command=lambda: thread_it(self._on_login, None))
         self.login_btn.grid(row=3, column=0)
         self.cancel_btn = Button(
-            self.login, text="使用默认token(可能无法运行)", command=self.close_login_window)
+            self.login, text="使用默认token(可能无法运行)", command=self._on_cancel_login)
         self.cancel_btn.grid(row=3, column=1)
+    
+    def _on_cancel_login(self):
+        self.close_login_window()
+        self.register_storyteller()
 
     def close_login_window(self):
         if self.login is not None:

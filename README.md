@@ -15,12 +15,15 @@
 ## 安装和使用
 
 直接下载项目，然后
+
 ```shell
-pip3 install revChatGPT --upgrade
+pip3 install -r requirements.txt
 ```
+
 安装依赖
 
 然后直接
+
 ```shell
 python3 example_story.py
 ```
@@ -36,7 +39,6 @@ python3 app.py
 调出一个app界面运行。
 
 ![](outputs/example_chatgpt_app.png)
-
 
 ## 须知
 
@@ -112,7 +114,7 @@ python3 app.py
 
 1. err TypeError: 'generator' object is not subscriptable
 
-见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，尝试`pip3 install revChatGPT --upgrade`升级依赖
+见 [#1](https://github.com/bupticybee/ChineseAiDungeonChatGPT/issues/1) ，尝试 `pip3 install revChatGPT --upgrade`升级依赖
 
 2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
 
