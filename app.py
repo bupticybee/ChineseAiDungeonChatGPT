@@ -1,6 +1,9 @@
 from tkinter import *
+from tkinter.ttk import Progressbar
 from story import StoryTeller
 from config import config
+import threading
+
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -12,9 +15,35 @@ bot_name = "故事"
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 
+def thread_it(func, *args):
+    # 创建
+    t = threading.Thread(target=func, args=args)
+    # 守护进程
+    t.setDaemon(True)
+    # 启动
+    t.start()
+    # t.join()
+
+
+def format_form(form, width, height):
+    """设置居中显示"""
+    # 得到屏幕宽度
+    win_width = form.winfo_screenwidth()
+    # 得到屏幕高度
+    win_height = form.winfo_screenheight()
+
+    # 计算偏移量
+    width_adjust = (win_width - width) / 2
+    height_adjust = (win_height - height) / 2
+
+    form.geometry("%dx%d+%d+%d" % (width, height, width_adjust, height_adjust))
+
+
 class ChatApplication:
 
     def __init__(self, story_teller, background):
+        self.bar = None
+        self.wait_window = None
         self.story_teller = story_teller
         self.background = background
         self.window = Tk()
@@ -65,9 +94,31 @@ class ChatApplication:
 
         # send button
         send_button = Button(bottom_label, text="发送", font=FONT_BOLD, width=20, bg=BG_GRAY,
-                             command=lambda: self._on_enter_pressed(None))
+                             command=lambda: thread_it(self._on_enter_pressed, None))
         send_button.place(relx=0.87, rely=0.008, relheight=0.06, relwidth=0.12)
         self._init_background(self.background)
+        # self.start_toplevel_window()
+
+    def start_toplevel_window(self):
+        # toplevel
+        self.wait_window = Toplevel()
+        self.wait_window.resizable(width=False, height=False)
+        format_form(self.wait_window, 300, 50)
+        self.wait_window.title("正在获取ChatGPT回复")
+        self.wait_window.wm_attributes("-topmost", True)
+
+        # progressbar
+        self.bar = Progressbar(self.wait_window, length=250, mode="indeterminate",
+                               orient=HORIZONTAL)
+        self.bar.pack(expand=True)
+        self.bar.start(10)
+
+    def close_toplevel_window(self):
+        if self.wait_window is not None:
+            self.wait_window.destroy()
+
+        self.wait_window = None
+        self.bar = None
 
     def _init_background(self, background):
         if not background:
@@ -80,7 +131,9 @@ class ChatApplication:
 
     def _on_enter_pressed(self, event):
         msg = self.msg_entry.get()
+        threading.Thread(target=self.start_toplevel_window()).start()
         self._insert_message(msg, "你")
+        self.close_toplevel_window()
 
     def _insert_message(self, msg, sender):
         if not msg:
