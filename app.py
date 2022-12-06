@@ -56,7 +56,8 @@ class ChatApplication:
     def _setup_main_window(self):
         self.window.title("AI地牢")
         self.window.resizable(width=False, height=False)
-        self.window.configure(width=470, height=550, bg=BG_COLOR)
+        format_form(self.window, 470, 550)
+        self.window.configure(bg=BG_COLOR)
 
         # head label
         head_label = Label(self.window, bg=BG_COLOR, fg=TEXT_COLOR,
