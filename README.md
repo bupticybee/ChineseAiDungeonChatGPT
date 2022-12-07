@@ -35,7 +35,7 @@ python3 app.py
 
 调出一个app界面运行。
 
-![](outputs/example_chatgpt_app.png)
+![app_screenshot](outputs/example_chatgpt_app.png)
 
 
 ## 须知
