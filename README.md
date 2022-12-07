@@ -10,7 +10,7 @@
 
 我已经不知道说什么了，我只是写了40行代码，花了1个小时，这个版本的中文ai地牢讲故事的能力比我之前花了一个月训练的 [ChineseAiDungeon](https://github.com/bupticybee/ChineseAiDungeon) 好了不止一个数量级。 并且它甚至不需要finetune。模型效果显著比清华开源的清源CPM好的多得多。
 
-我感觉chat opt讲故事的能力已经直接逼近ai地牢本身了。科技的进步，令人恐怖。
+我感觉chat gpt讲故事的能力已经直接逼近ai地牢本身了。科技的进步，令人恐怖。
 
 ## 安装和使用
 
