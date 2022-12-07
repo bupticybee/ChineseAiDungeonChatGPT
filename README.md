@@ -44,7 +44,7 @@ python3 app.py
 
 但是仍可能有一些情况，可能导致我的token没法用：
 
-1. 太多人用导致账号被封禁（这很有可能）
+1. 太多人用导致账号被封禁
 2. 账号被盗，改了密码等
 3. token过期
 4. openai封了接口，或者接口收费了等等
@@ -116,4 +116,4 @@ python3 app.py
 
 2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
 
-一般是接口太多人调用挂了，等openai修复就好
+一般是接口太多人调用挂了，等openai修复就好，或者接口更新导致无效之类的，这个时候一般更新revChatGPT可以解决
