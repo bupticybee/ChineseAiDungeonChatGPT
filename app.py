@@ -1,3 +1,4 @@
+import copy
 from tkinter import *
 from tkinter.ttk import Progressbar
 import tkinter.messagebox
@@ -8,14 +9,7 @@ import threading
 import time
 
 # Local
-from Classes import auth as Auth
-
-# Fancy stuff
-import colorama
-from colorama import Fore
-
-colorama.init(autoreset=True)
-
+from pychatgpt import OpenAI
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -23,7 +17,6 @@ TEXT_COLOR = "#EAECEE"
 
 FONT = "等线"
 FONT_BOLD = "黑体"
-bot_name = "故事"
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 login_msg = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
@@ -56,6 +49,7 @@ def format_form(form, width, height):
 class ChatApplication:
 
     def __init__(self, story_teller, background):
+        self.login = None
         self.bar = None
         self.wait_window = None
         self.story_teller = story_teller
@@ -117,9 +111,15 @@ class ChatApplication:
         self.check_cred()
 
     def _on_return(self, event):
+        """
+        After enter <Return> in text entry.
+        """
         thread_it(self._on_enter_pressed, None)
 
     def show_login_window(self):
+        """
+        Show login window.
+        """
         self.login = Toplevel()
         self.login.resizable(width=False, height=False)
         format_form(self.login, 300, 100)
@@ -148,63 +148,86 @@ class ChatApplication:
         self.cancel_btn.grid(row=3, column=1)
     
     def _on_cancel_login(self):
+        """
+        Cancel login and use default session token.
+        """
         self.close_login_window()
-        self.register_storyteller()
+        self.register_storyteller(use_default=True)
 
     def close_login_window(self):
+        """
+        Close login window
+        """
         if self.login is not None:
             self.login.destroy()
 
         self.login = None
 
     def show_background_window(self):
+        """
+        Show background story window.
+        """
         result = tkinter.simpledialog.askstring(
-            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background, parent=self.window)
+            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background)
         if result:
             self.background = result
 
     def check_cred(self):
-        threading.Thread(
-            target=self.start_toplevel_window("正在检查当前token是否有效")).start()
-        self.expired_creds = Auth.expired_creds()
+        """
+        Check if access token is expired.
+        """
+        self.expired_creds = OpenAI.token_expired()
+        # self.expired_creds = True
         if self.expired_creds:
-            self.close_toplevel_window()
             tkinter.messagebox.showerror(
                 title="token已过期", message="请输入在OpenAI注册的邮箱和密码来自动获取新的token。")
             self.show_login_window()
         else:
-            self.close_toplevel_window()
-            self.register_storyteller()
+            self.register_storyteller(use_default=False)
 
-    # press login
     def _on_login(self, event):
+        """
+        After press login button.
+        """
         email = self.input_email.get()
         password = self.input_pwd.get()
         threading.Thread(
             target=self.start_toplevel_window("正在登陆获取token")).start()
-        open_ai_auth = Auth.OpenAIAuth(email_address=email, password=password)
-        print(f"{Fore.GREEN}>> Credentials have been refreshed.")
-        open_ai_auth.begin()
-        time.sleep(3)
-        is_still_expired = Auth.expired_creds()
-        self.close_toplevel_window()
-        if is_still_expired:
+        self.open_ai_auth = OpenAI.Auth(email_address=email, password=password)
+        try:
+            self.open_ai_auth.create_token()
+        except:
+            self.close_toplevel_window()
             tkinter.messagebox.showerror(
                 title="获取token失败", message="请检查邮箱和密码。")
         else:
+            self.close_toplevel_window()
+            print(f">> Credentials have been refreshed.")
             self.close_login_window()
-            tkinter.messagebox.showinfo(
-                title="获取token成功!", message="关闭此窗口并开始你的AI地牢之旅!")
-            self.register_storyteller()
+            self.register_storyteller(use_default=False)
 
-    def register_storyteller(self):
+    def register_storyteller(self, use_default):
+        """
+        Init background and register a storyteller
+        :param use_default: Whether user use default session token in config.py. If not, use access token.
+        """
         self.show_background_window()
         self._init_background(self.background)
-        access_token = Auth.get_access_token()
-        config["session_token"] = access_token
-        self.story_teller = StoryTeller(config, self.background)
+        if use_default:
+            _config_2 = copy.deepcopy(config)
+        else:
+            access_token = OpenAI.get_access_token()
+            print(access_token)
+            _config_2 = {"Authorization": access_token[0]}
+        print(_config_2)
+        self.story_teller = StoryTeller(_config_2, self.background)
 
     def start_toplevel_window(self, msg):
+        """
+        Start a toplevel window when waiting for response.
+        :param msg: Window title
+        """
+
         # toplevel
         self.wait_window = Toplevel()
         self.wait_window.resizable(width=False, height=False)
@@ -219,6 +242,9 @@ class ChatApplication:
         self.bar.start(10)
 
     def close_toplevel_window(self):
+        """
+        Close toplevel window.
+        """
         if self.wait_window is not None:
             self.wait_window.destroy()
 
@@ -226,6 +252,9 @@ class ChatApplication:
         self.bar = None
 
     def _init_background(self, background):
+        """
+        Put background story into dialog window.
+        """
         if not background:
             return
         self.msg_entry.delete(0, END)
@@ -235,13 +264,18 @@ class ChatApplication:
         self.text_widget.configure(state=DISABLED)
 
     def _on_enter_pressed(self, event):
+        """
+        After enter <Send>.
+        """
         msg = self.msg_entry.get()
-        threading.Thread(target=self.start_toplevel_window(
-            "正在获取ChatGPT回复")).start()
+        self.start_toplevel_window("正在获取ChatGPT回复")
         self._insert_message(msg, "你")
         self.close_toplevel_window()
 
     def _insert_message(self, msg, sender):
+        """
+        Try to get message from ChatGPT and insert into dialog window.
+        """
         if not msg:
             return
         self.msg_entry.delete(0, END)
@@ -251,7 +285,7 @@ class ChatApplication:
         self.text_widget.configure(state=DISABLED)
 
         self.story_teller.action(msg)
-        msg2 = f"{bot_name}: {self.story_teller.response}\n\n"
+        msg2 = f"{self.story_teller.response}\n\n"
         self.text_widget.configure(state=NORMAL)
         self.text_widget.insert(END, msg2)
         self.text_widget.configure(state=DISABLED)
@@ -260,6 +294,7 @@ class ChatApplication:
 
 
 if __name__ == "__main__":
-    story_teller = StoryTeller(config, story_background)
+    _config = copy.deepcopy(config)
+    story_teller = StoryTeller(_config, story_background)
     app = ChatApplication(story_teller, story_background)
     app.run()
