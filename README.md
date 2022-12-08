@@ -25,7 +25,7 @@ pip3 install revChatGPT --upgrade
 python3 example_story.py
 ```
 
-就可以在命令行运行起来
+就可以在命令行运行起来。
 
 你也可以通过
 
