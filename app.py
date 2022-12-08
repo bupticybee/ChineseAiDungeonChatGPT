@@ -6,7 +6,6 @@ import tkinter.simpledialog
 from story import StoryTeller
 from config import config
 import threading
-import time
 
 # Local
 from pychatgpt import OpenAI
@@ -19,7 +18,6 @@ FONT = "等线"
 FONT_BOLD = "黑体"
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
-login_msg = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 
 
 def thread_it(func, *args):
