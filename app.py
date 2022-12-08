@@ -268,7 +268,7 @@ class ChatApplication:
         After enter <Send>.
         """
         msg = self.msg_entry.get()
-        self.start_toplevel_window("正在获取ChatGPT回复")
+        threading.Thread(target=self.start_toplevel_window("正在获取ChatGPT回复")).start()
         self._insert_message(msg, "你")
         self.close_toplevel_window()
 
