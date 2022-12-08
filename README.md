@@ -10,7 +10,7 @@
 
 我已经不知道说什么了，我只是写了40行代码，花了1个小时，这个版本的中文ai地牢讲故事的能力比我之前花了一个月训练的 [ChineseAiDungeon](https://github.com/bupticybee/ChineseAiDungeon) 好了不止一个数量级。 并且它甚至不需要finetune。模型效果显著比清华开源的清源CPM好的多得多。
 
-我感觉chat opt讲故事的能力已经直接逼近ai地牢本身了。科技的进步，令人恐怖。
+我感觉chat gpt讲故事的能力已经直接逼近ai地牢本身了。科技的进步，令人恐怖。
 
 ## 安装和使用
 
@@ -28,7 +28,7 @@ pip3 install -r requirements.txt
 python3 example_story.py
 ```
 
-就可以在命令行运行起来
+就可以在命令行运行起来。
 
 你也可以通过
 
@@ -38,7 +38,7 @@ python3 app.py
 
 调出一个app界面运行。
 
-![](outputs/example_chatgpt_app.png)
+![app_screenshot](outputs/example_chatgpt_app.png)
 
 ## 须知
 
@@ -46,7 +46,7 @@ python3 app.py
 
 但是仍可能有一些情况，可能导致我的token没法用：
 
-1. 太多人用导致账号被封禁（这很有可能）
+1. 太多人用导致账号被封禁
 2. 账号被盗，改了密码等
 3. token过期
 4. openai封了接口，或者接口收费了等等
@@ -118,4 +118,4 @@ python3 app.py
 
 2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
 
-一般是接口太多人调用挂了，等openai修复就好
+一般是接口太多人调用挂了，等openai修复就好，或者接口更新导致无效之类的，这个时候一般更新revChatGPT可以解决
