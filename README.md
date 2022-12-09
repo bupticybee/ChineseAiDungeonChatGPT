@@ -37,7 +37,7 @@ python3 example_story.py
 python3 app.py
 ```
 
-调出一个app界面运行。
+调出一个app界面运行，使用app版本时确保python升级到3.9以上。
 
 ![app_screenshot](outputs/example_chatgpt_app.png)
 
