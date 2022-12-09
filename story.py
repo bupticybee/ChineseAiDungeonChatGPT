@@ -21,11 +21,11 @@ class StoryTeller():
         if user_action[-1] != "。":
             user_action = user_action + "。"
         if self.first_interact:
-            prompt = """现在来续写一个冒险小说，续写的时候注意节奏，不要太快，每个段落就只讲5分钟的事情。一次只需要续写四句话。
+            prompt = """现在来充当一个冒险文字游戏，描述时候注意节奏，不要太快，仔细描述各个人物的心情和周边环境。一次只需写四到六句话。
             开头是，""" + self.story + """ 你""" + user_action
             self.first_interact = False
         else:
-            prompt = """继续续写，续写的时候注意节奏，续写的时候注意节奏，不要太快，一次只需要续写四到六句话，总共就只讲5分钟内发生的事情。
+            prompt = """继续，一次只需要续写四到六句话，总共就只讲5分钟内发生的事情。
             你""" + user_action
         resp = self.chatbot.get_chat_response(prompt)  # Sends a request to the API and returns the response by OpenAI
         self.response = resp["message"]
