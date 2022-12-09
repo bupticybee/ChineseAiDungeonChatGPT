@@ -3,9 +3,12 @@ from tkinter import *
 from tkinter.ttk import Progressbar
 import tkinter.messagebox
 import tkinter.simpledialog
+from typing import Callable
+
 from story import StoryTeller
 from config import config
 import threading
+from concurrent import futures
 
 # Local
 from pychatgpt import OpenAI
@@ -139,7 +142,7 @@ class ChatApplication:
 
         # login and cancel
         self.login_btn = Button(self.login, text="登陆",
-                                command=lambda: thread_it(self._on_login, None))
+                                command=lambda: thread_it(self._on_login))
         self.login_btn.grid(row=3, column=0)
         self.cancel_btn = Button(
             self.login, text="使用默认token(可能无法运行)", command=self._on_cancel_login)
@@ -184,25 +187,50 @@ class ChatApplication:
         else:
             self.register_storyteller(use_default=False)
 
-    def _on_login(self, event):
+    def _on_login(self):
         """
         After press login button.
         """
         email = self.input_email.get()
         password = self.input_pwd.get()
-        thread_it(self.start_toplevel_window, "正在登陆获取token")
         self.open_ai_auth = OpenAI.Auth(email_address=email, password=password)
-        try:
-            self.open_ai_auth.create_token()
-        except:
-            self.close_toplevel_window()
-            tkinter.messagebox.showerror(
-                title="获取token失败", message="请检查邮箱和密码。")
-        else:
-            self.close_toplevel_window()
+        thread_it(self.start_toplevel_window, "正在登陆获取token")
+        thread_pool = futures.ThreadPoolExecutor()
+        self.future = thread_pool.submit(self.get_token)
+        self.check_event(self.after_get_token)
+
+    def after_get_token(self, result):
+        """
+        Login线程回调函数
+        """
+        self.close_toplevel_window()
+        if isinstance(result, bool) and result:
             print(f">> Credentials have been refreshed.")
             self.close_login_window()
             self.register_storyteller(use_default=False)
+        else:
+            tkinter.messagebox.showerror(
+                title="获取token失败", message="请检查邮箱和密码。")
+
+    def check_event(self, callback: Callable):
+        """
+        轮询
+        """
+        if self.future.done():
+            callback(self.future.result())
+        else:
+            self.window.after(100, self.check_event, callback)
+
+    def get_token(self):
+        """
+        获取token的进程
+        """
+        try:
+            self.open_ai_auth.create_token()
+        except:
+            return False
+        else:
+            return True
 
     def register_storyteller(self, use_default):
         """
