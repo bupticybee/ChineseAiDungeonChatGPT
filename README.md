@@ -1,7 +1,7 @@
 # 中文版本的ai地牢（基于ChatGPT版本）
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bupticybee/ChineseAiDungeonChatGPT/blob/main/Example.ipynb)
-[![Python](https://img.shields.io/badge/python-3.8-blue.svg)](https://img.shields.io/badge/python-3.8-blue.svg)
+[![Python](https://img.shields.io/badge/python-3.9-blue.svg)](https://img.shields.io/badge/python-3.9-blue.svg)
 
 ![storysample](outputs/story.gif)
 
