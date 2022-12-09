@@ -2,7 +2,7 @@ from revChatGPT.revChatGPT import Chatbot
 try:
     from pychatgpt import OpenAI
 except:
-    print("你的Python版本低于3.9或没有安装pychatgpt，无法使用登陆功能，将使用默认token。")
+    print("你的Python版本低于3.9或没有安装pychatgpt，无法使用登陆功能，将使用默认token。\n\n\n")
 import textwrap
 
 
