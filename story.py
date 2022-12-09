@@ -10,7 +10,7 @@ def print_warp(instr):
 
 def login(config):
     expired_creds = OpenAI.token_expired()
-    expired_creds = True
+    # expired_creds = True
 
     if expired_creds:
         print_warp("access_token过期，请选择登陆(y)或者使用默认的session_token(n)。请输入(y/n):")
