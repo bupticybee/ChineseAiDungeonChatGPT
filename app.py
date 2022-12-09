@@ -166,9 +166,10 @@ class ChatApplication:
         Show background story window.
         """
         result = tkinter.simpledialog.askstring(
-            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background)
+            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background, parent=self.window)
         if result:
             self.background = result
+        self._init_background(self.background)
 
     def check_cred(self):
         """
@@ -189,8 +190,7 @@ class ChatApplication:
         """
         email = self.input_email.get()
         password = self.input_pwd.get()
-        threading.Thread(
-            target=self.start_toplevel_window("正在登陆获取token")).start()
+        thread_it(self.start_toplevel_window, "正在登陆获取token")
         self.open_ai_auth = OpenAI.Auth(email_address=email, password=password)
         try:
             self.open_ai_auth.create_token()
@@ -210,7 +210,6 @@ class ChatApplication:
         :param use_default: Whether user use default session token in config.py. If not, use access token.
         """
         self.show_background_window()
-        self._init_background(self.background)
         if use_default:
             _config_2 = copy.deepcopy(config)
         else:
@@ -266,7 +265,7 @@ class ChatApplication:
         After enter <Send>.
         """
         msg = self.msg_entry.get()
-        threading.Thread(target=self.start_toplevel_window("正在获取ChatGPT回复")).start()
+        thread_it(self.start_toplevel_window, "正在获取ChatGPT回复")
         self._insert_message(msg, "你")
         self.close_toplevel_window()
 
