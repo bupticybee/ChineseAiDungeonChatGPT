@@ -3,10 +3,12 @@ from tkinter import *
 from tkinter.ttk import Progressbar
 import tkinter.messagebox
 import tkinter.simpledialog
+from typing import Callable
+
 from story import StoryTeller
 from config import config
 import threading
-import time
+from concurrent import futures
 
 # Local
 from pychatgpt import OpenAI
@@ -19,7 +21,6 @@ FONT = "等线"
 FONT_BOLD = "黑体"
 
 story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
-login_msg = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
 
 
 def thread_it(func, *args):
@@ -141,7 +142,7 @@ class ChatApplication:
 
         # login and cancel
         self.login_btn = Button(self.login, text="登陆",
-                                command=lambda: thread_it(self._on_login, None))
+                                command=lambda: thread_it(self._on_login))
         self.login_btn.grid(row=3, column=0)
         self.cancel_btn = Button(
             self.login, text="使用默认token(可能无法运行)", command=self._on_cancel_login)
@@ -168,9 +169,10 @@ class ChatApplication:
         Show background story window.
         """
         result = tkinter.simpledialog.askstring(
-            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background)
+            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background, parent=self.window)
         if result:
             self.background = result
+        self._init_background(self.background)
 
     def check_cred(self):
         """
@@ -185,26 +187,50 @@ class ChatApplication:
         else:
             self.register_storyteller(use_default=False)
 
-    def _on_login(self, event):
+    def _on_login(self):
         """
         After press login button.
         """
         email = self.input_email.get()
         password = self.input_pwd.get()
-        threading.Thread(
-            target=self.start_toplevel_window("正在登陆获取token")).start()
         self.open_ai_auth = OpenAI.Auth(email_address=email, password=password)
-        try:
-            self.open_ai_auth.create_token()
-        except:
-            self.close_toplevel_window()
-            tkinter.messagebox.showerror(
-                title="获取token失败", message="请检查邮箱和密码。")
-        else:
-            self.close_toplevel_window()
+        thread_it(self.start_toplevel_window, "正在登陆获取token")
+        thread_pool = futures.ThreadPoolExecutor()
+        self.future = thread_pool.submit(self.get_token)
+        self.check_event(self.after_get_token)
+
+    def after_get_token(self, result):
+        """
+        Login线程回调函数
+        """
+        self.close_toplevel_window()
+        if isinstance(result, bool) and result:
             print(f">> Credentials have been refreshed.")
             self.close_login_window()
             self.register_storyteller(use_default=False)
+        else:
+            tkinter.messagebox.showerror(
+                title="获取token失败", message="请检查邮箱和密码。")
+
+    def check_event(self, callback: Callable):
+        """
+        轮询
+        """
+        if self.future.done():
+            callback(self.future.result())
+        else:
+            self.window.after(100, self.check_event, callback)
+
+    def get_token(self):
+        """
+        获取token的进程
+        """
+        try:
+            self.open_ai_auth.create_token()
+        except:
+            return False
+        else:
+            return True
 
     def register_storyteller(self, use_default):
         """
@@ -212,7 +238,6 @@ class ChatApplication:
         :param use_default: Whether user use default session token in config.py. If not, use access token.
         """
         self.show_background_window()
-        self._init_background(self.background)
         if use_default:
             _config_2 = copy.deepcopy(config)
         else:
@@ -268,7 +293,7 @@ class ChatApplication:
         After enter <Send>.
         """
         msg = self.msg_entry.get()
-        self.start_toplevel_window("正在获取ChatGPT回复")
+        thread_it(self.start_toplevel_window, "正在获取ChatGPT回复")
         self._insert_message(msg, "你")
         self.close_toplevel_window()
 
