@@ -1,3 +1,2 @@
 revChatGPT~=0.0.24
 chatgptpy
-future~=0.18.2
