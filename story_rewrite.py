@@ -105,8 +105,8 @@ class StoryTeller:
         print("请输入邮箱密码。")
         _config["email"] = input("邮箱:")
         _config["password"] = input("密码:")
-        _config["options"]["log"] = input_option("是否开启log:", 'y', 'n', 'n')
-        _config["options"]["track"] = input_option("是否进行对话追踪:", 'y', 'n', 'y')
+        _config["options"]["log"] = input_option("是否开启log(方便debug):", 'y', 'n', 'n')
+        _config["options"]["track"] = input_option("是否开启对话追踪(保存对话并下次能继续对话):", 'y', 'n', 'y')
         prox = input("若使用代理，请输入代理url。不使用则直接回车。")
         if prox:
             _config["options"]["proxies"] = prox
@@ -148,8 +148,8 @@ class StoryTeller:
 
     def get_config(self):
         if PYCHATGPT_AVAILABLE:
-            print(
-                "请选择使用方式：\n y:登陆使用。(需要OpenAI账号。能够使用代理，继续故事等功能) \n n:不登陆使用。(使用之前获取的access_token或者默认的session_token运行)")
+            print("请选择使用方式：\n y:登陆使用。(需要OpenAI账号。能够使用代理，读取故事，保存故事等功能) \n n:不登陆使用。("
+                  "使用之前获取的access_token或者默认的session_token运行)")
             res = input()
             if res == 'y':
                 return self.config_by_account()
