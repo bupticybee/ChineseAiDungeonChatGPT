@@ -55,8 +55,8 @@ class StoryTeller:
         options.track = self.config['options']['track']
         if 'proxies' in self.config['options'].keys():
             options.proxies = self.config['options']['proxies']
-        if 'previous_convo_id' in self.config['options'].keys():
-            previous_convo_id = self.config['options']['previous_convo_id']
+        if 'previous_convo_id' in self.config.keys():
+            previous_convo_id = self.config['previous_convo_id']
         self.chatbot = Chat(email=self.config['email'], password=self.config['password'], options=options,
                             previous_convo_id=previous_convo_id)
 
@@ -99,17 +99,28 @@ class StoryTeller:
                 # "chat_log": None,
                 # "id_log": None
             },
-            "previous_convo_id": str  # resume a conversation
+            # "previous_convo_id": str  # resume a conversation
         }
         self.type = 1
         print("请输入邮箱密码。")
         _config["email"] = input("邮箱:")
         _config["password"] = input("密码:")
-        _config["options"]["log"] = input_option("是否开启log:", 'y', 'n', 'y')
+        _config["options"]["log"] = input_option("是否开启log:", 'y', 'n', 'n')
         _config["options"]["track"] = input_option("是否进行对话追踪:", 'y', 'n', 'y')
         prox = input("若使用代理，请输入代理url。不使用则直接回车。")
         if prox:
             _config["options"]["proxies"] = prox
+        try:
+            with open('id_log.txt', 'r') as f:
+                lines = f.readlines()
+                last_line = lines[-1]
+                if last_line:
+                    resume = input_option("发现之前的冒险。是否继续冒险:", 'y', 'n', 'y')
+                    if resume:
+                        self.first_interact = False
+                        _config["previous_convo_id"] = last_line
+        except:
+            pass
         return _config
 
     def setup_chatbot(self):
@@ -119,10 +130,20 @@ class StoryTeller:
         else:
             self.login_by_token()
 
-        print("请输入背景故事。置空则使用默认背景故事。")
-        background = input()
-        if background:
-            self.background = background
+        if self.first_interact:
+            print("请输入背景故事。置空则使用默认背景故事。")
+            background = input()
+            if background:
+                self.background = background
+        else:
+            try:
+                with open('chat_log.txt', 'r') as f:
+                    lines = f.readlines()
+                    last_line = lines[-1]
+                    if last_line:
+                        self.background = last_line[10:]
+            except:
+                self.background = ""
         print("\n\n\n")
 
     def get_config(self):
@@ -170,5 +191,4 @@ class StoryTeller:
         print_warp(self.background)
         while True:
             action = input(Fore.GREEN + "> 你")
-            self.action(action)
             print_warp(self.action(action))
