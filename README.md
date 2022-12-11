@@ -123,4 +123,4 @@ python3 app.py
 
 3. ValueError: Error refreshing session: No email and password provided
 
-一般是token过期。可以按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 自己获取token配置config或者等待token更新。
+一般是token过期。可以按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 自己获取token配置config或者提issue等待token更新。
