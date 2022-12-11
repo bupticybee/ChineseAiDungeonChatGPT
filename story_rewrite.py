@@ -13,7 +13,7 @@ except:
     PYCHATGPT_AVAILABLE = False
 
 
-class Chatter:
+class StoryTeller:
     def __init__(self, background):
         """
         Setup chatbot based on type and config.
@@ -63,7 +63,7 @@ class Chatter:
     def config_by_token(self):
         self.type = 0
         expired_creds = OpenAI.token_expired()
-        # expired_creds = True
+        expired_creds = True
 
         if expired_creds:
             print("access_token过期，请选择登陆(y)或者使用默认的session_token(n)。请输入(y/n):")
