@@ -49,11 +49,11 @@ def format_form(form, width, height):
 
 class ChatApplication:
 
-    def __init__(self, story_teller, background):
+    def __init__(self, background):
         self.login = None
         self.bar = None
         self.wait_window = None
-        self.story_teller = story_teller
+        self.story_teller = None
         self.background = background
         self.window = Tk()
         self._setup_main_window()
@@ -319,7 +319,5 @@ class ChatApplication:
 
 
 if __name__ == "__main__":
-    _config = copy.deepcopy(config)
-    story_teller = StoryTeller(_config, story_background)
-    app = ChatApplication(story_teller, story_background)
+    app = ChatApplication(story_background)
     app.run()

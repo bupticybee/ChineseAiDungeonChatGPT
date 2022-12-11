@@ -1,2 +1,3 @@
 revChatGPT~=0.0.24
 chatgptpy
+colorama~=0.4.6
