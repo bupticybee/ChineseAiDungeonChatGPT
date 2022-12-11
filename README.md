@@ -120,3 +120,7 @@ python3 app.py
 2. response = response.text.splitlines()[-4]  IndexError: list index out of rang
 
 一般是接口太多人调用挂了，等openai修复就好，或者接口更新导致无效之类的，这个时候一般更新revChatGPT可以解决
+
+3. ValueError: Error refreshing session: No email and password provided
+
+一般是token过期。可以按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 自己获取token配置config或者提issue等待token更新。
