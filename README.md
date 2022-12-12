@@ -54,6 +54,8 @@ python3 app.py
 
 在这种情况出现时，大家需要自备梯子，并且按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 的说明填写config.py。
 
+经常的，openai会更新自己的策略，所以需要经常性的按照 https://github.com/acheong08/ChatGPT/wiki/Setup 更新config.py
+
 几个我自己玩的故事见outputs文件夹，总体感觉非常震撼，大家可以参考。
 
 其中一个故事,这一个故事里边，我在一个洞穴里迷路了，然后机智的凭借回城卷轴回了村子。
