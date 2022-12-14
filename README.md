@@ -39,7 +39,7 @@ python3 app.py
 
 调出一个app界面运行，使用app版本时确保python升级到3.9以上。
 
-![app_screenshot](outputs/example_chatgpt_app.png)
+![screenshot](outputs/example_chatgpt_app.png)
 
 ## 须知
 
@@ -53,6 +53,8 @@ python3 app.py
 4. openai封了接口，或者接口收费了等等
 
 在这种情况出现时，大家需要自备梯子，并且按照 [revChatGPT](https://github.com/acheong08/ChatGPT) 的说明填写config.py。
+
+经常的，openai会更新自己的策略，所以需要经常性的按照 https://github.com/acheong08/ChatGPT/wiki/Setup 更新config.py
 
 几个我自己玩的故事见outputs文件夹，总体感觉非常震撼，大家可以参考。
 
