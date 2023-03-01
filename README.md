@@ -42,6 +42,20 @@ python3 app.py
 ![screenshot](outputs/example_chatgpt_app.png)
 
 ## 须知
+### 2023.3.1更新
+鉴于[revChatGPT](https://github.com/acheong08/ChatGPT)提供的api已经可以稳定使用，此项目也已更换到新的api并恢复更新。目前cli端已经可以正常使用，直接
+```shell
+python3 example_story.py
+```
+运行即可。确保已经将`revChatGPT`包升级到最新版。为了保证稳定性，原本的使用session_token的方式已被放弃，仅支持使用OpenAI的帐号进行登陆。  
+
+除去api更新，还更新了以下内容:
+1. cli界面更新，更加美观。
+2. 增加自动保存，读取功能。
+
+GUI版本尚未更新，将会尽快更新并恢复使用。
+
+---
 
 我把我自己的open ai账号token直接附带在了代码里，大家可以直接使用。
 
