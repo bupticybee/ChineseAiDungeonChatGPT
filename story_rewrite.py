@@ -33,7 +33,7 @@ class StoryTeller:
         self.chatbot = None
         self.first_interact = True
 
-    def _login(self, _config):
+    def login(self, _config):
         if self.type == 0:
             self.chatbot = ofChatbot(api_key=_config['api_key'])
         else:
@@ -88,7 +88,7 @@ class StoryTeller:
 
     def setup_chatbot(self):
         self.config = self.get_config()
-        self._login(self.config)
+        self.login(self.config)
 
         if self.first_interact:
             print("请输入背景故事。置空则使用默认背景故事。")
