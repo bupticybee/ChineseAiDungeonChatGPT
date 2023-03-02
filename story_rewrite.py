@@ -6,8 +6,9 @@ from colorama import Fore
 PYCHATGPT_AVAILABLE = True
 try:
     from revChatGPT.V1 import Chatbot
+    from revChatGPT.V3 import Chatbot as ofChatbot
 except:
-    error("你没有安装revChatGPT，无法使用。\n\n\n")
+    error("你没有安装revChatGPT或没有更新到最新版本，无法使用。\n\n\n")
     PYCHATGPT_AVAILABLE = False
 
 
@@ -27,23 +28,25 @@ class StoryTeller:
             }
         """
         self.background = background
-        self.type = None  # session token or openai account
+        self.type = None  # 0 for api token (official api) or 1 for openai account (free api)
         self.config = None
         self.chatbot = None
         self.first_interact = True
 
     def _login(self, _config):
-        self.chatbot = Chatbot(_config)
+        if self.type == 0:
+            self.chatbot = ofChatbot(api_key=_config['api_key'])
+        else:
+            self.chatbot = Chatbot(_config)
 
     def config_by_token(self):
         """
-        Config by session token
+        Config by api token (official api)
         """
         self.type = 0
 
-        session_token = config["session_token"]
-        print(session_token)
-        _config = {"session_token": session_token}
+        api_key = input("请输入api_key(获取方式: https://platform.openai.com/account/api-keys):")
+        _config = {'api_key': api_key}
         return _config
 
     def config_by_account(self):
@@ -104,18 +107,18 @@ class StoryTeller:
         print("\n\n\n")
 
     def get_config(self):
-        # if PYCHATGPT_AVAILABLE:
-        #     print("请选择使用方式：\n y:登陆使用。(需要OpenAI账号) \n n:不登陆使用。("
-        #           "使用默认的session_token运行，可能无法运行)")
-        #     res = input()
-        #     if res == 'y':
-        #         return self.config_by_account()
-        #     else:
-        #         return self.config_by_token()
-        # else:
-        #     self.type = 0
-        #     return config
-        return self.config_by_account()
+        if PYCHATGPT_AVAILABLE:
+            print("请选择使用方式：\n y:使用逆向工程api。\n    " + Fore.RED + "~帐号可能被ban！谨慎使用\n" + Fore.RESET + "    ~免费，需要OpenAI账号 \n n:使用官方api。\n    "
+                  "~帐号需开启付费 \n    ~使用api key登陆")
+            res = input()
+            if res == 'y':
+                return self.config_by_account()
+            else:
+                return self.config_by_token()
+        else:
+            self.type = 0
+            return config
+        # return self.config_by_account()
 
     def start_cli(self):
         print_logo()
@@ -145,17 +148,17 @@ class StoryTeller:
             你""" + user_action
         response = ""
 
-        for data in self.chatbot.ask(
-            prompt
-        ):
-            response = data["message"]
-
-        self.save_conversations(response)
-
-        if self.first_interact:
-            self.first_interact = False
-            self.save_conversation_id(self.chatbot.get_conversations()[0]['id'])
-
+        if self.type == 1:
+            for data in self.chatbot.ask(
+                prompt
+            ):
+                response = data["message"]
+            self.save_conversations(response)
+            if self.first_interact:
+                self.first_interact = False
+                self.save_conversation_id(self.chatbot.get_conversations()[0]['id'])
+        else:
+            response = self.chatbot.ask(prompt)
         return response
 
     def interactive(self):
