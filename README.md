@@ -42,6 +42,18 @@ python3 app.py
 ![screenshot](outputs/example_chatgpt_app.png)
 
 ## 须知
+### 2023.3.2更新
+OpenAI官方API已发布，因此加入了使用官方`api_key`的登录方式。此方法需要OpenAI账号绑定付款方式，而且收费，但速度更快，鲁棒性更强。获取地址:[OpenAI API](https://platform.openai.com/account/api-keys)
+
+同时，有消息称OpenAI在发布官方API后将加大对非官方API的封锁，继续使用账号密码可能会导致封号。界面上也已经加入了提醒，请谨慎使用。
+
+GUI端也已同步更新并恢复使用，启动方式不变。确保已经将`revChatGPT`包升级到最新版。升级方式:
+```shell
+pip3 install --upgrade revChatGPT
+```
+
+---
+
 ### 2023.3.1更新
 鉴于[revChatGPT](https://github.com/acheong08/ChatGPT)提供的api已经可以稳定使用，此项目也已更换到新的api并恢复更新。目前cli端已经可以正常使用，直接
 ```shell
