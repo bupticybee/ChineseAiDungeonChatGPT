@@ -15,26 +15,26 @@ BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
 TEXT_COLOR = "#EAECEE"
 
-FONT = "等线"
-FONT_BOLD = "黑体"
+FONT = "line"
+FONT_BOLD = "black body"
 
-story_background = "辛迪加大陆分为托雷省，尼莱省和穆拉省，其中生活着矮人，精灵，人类三个种族以及无数的怪物。你是一个来自托雷的人类男性魔法师，今年21岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了莱肯斯雨林进行冒险。"
+story_background = "The Syndicate Continent is divided into Torre Province, Nilai Province and Mula Province, where dwarves, elves, and humans live, as well as countless monsters. You are a 21-year-old human male magician from Torre. With a staff of fire in your left hand, a magic book in your right, and a week's worth of rations in your backpack, you enter the Lykens Rainforest for an adventure."
 
 
 def thread_it(func, *args):
-    # 创建
+    # create
     t = threading.Thread(target=func, args=args)
-    # 守护进程
+    # daemon process
     t.daemon = True
     t.setDaemon(True)
-    # 启动
+    # start up
     t.start()
     # t.join()
 
 
 def format_form(form, width, height):
-    """设置居中显示"""
-    # 得到屏幕宽度
+    """Set centered display"""
+    # get screen width
     win_width = form.winfo_screenwidth()
     # 得到屏幕高度
     win_height = form.winfo_screenheight()
@@ -66,14 +66,14 @@ class ChatApplication:
         self.window.mainloop()
 
     def _setup_main_window(self):
-        self.window.title("AI地牢")
+        self.window.title("AI dungeon")
         self.window.resizable(width=False, height=False)
         format_form(self.window, 470, 550)
         self.window.configure(bg=BG_COLOR)
 
         # head label
         head_label = Label(self.window, bg=BG_COLOR, fg=TEXT_COLOR,
-                           text="AI地牢", font=FONT_BOLD, pady=10)
+                           text="AI dungeon", font=FONT_BOLD, pady=10)
         head_label.place(relwidth=1)
 
         # tiny divider
@@ -109,7 +109,7 @@ class ChatApplication:
         self.msg_entry.bind("<Return>", self._on_return)
 
         # send button
-        send_button = Button(bottom_label, text="发送", font=FONT_BOLD, width=20, bg=BG_GRAY,
+        send_button = Button(bottom_label, text="send", font=FONT_BOLD, width=20, bg=BG_GRAY,
                              command=lambda: thread_it(self._on_enter_pressed, None))
         send_button.place(relx=0.87, rely=0.008, relheight=0.06, relwidth=0.12)
         self.before_start()
@@ -127,28 +127,28 @@ class ChatApplication:
         self.login = Toplevel()
         self.login.resizable(width=False, height=False)
         format_form(self.login, 300, 100)
-        self.login.title("登陆")
+        self.login.title("log in")
         self.login.wm_attributes("-topmost", True)
         self.login.protocol("WM_DELETE_WINDOW", self._on_cancel_login)
 
         # email input
-        self.email = Label(self.login, text="邮箱：")
+        self.email = Label(self.login, text="Mail：")
         self.email.grid(row=1, column=0)
         self.input_email = Entry(self.login)
         self.input_email.grid(row=1, column=1)
 
         # pwd input
-        self.pwd = Label(self.login, text="密码：")
+        self.pwd = Label(self.login, text="password：")
         self.pwd.grid(row=2, column=0)
         self.input_pwd = Entry(self.login)
         self.input_pwd.grid(row=2, column=1)
 
         # login and cancel
-        self.login_btn = Button(self.login, text="登陆",
+        self.login_btn = Button(self.login, text="log in",
                                 command=self._on_login)
         self.login_btn.grid(row=3, column=0)
         self.cancel_btn = Button(
-            self.login, text="使用api_keys", command=self._on_cancel_login)
+            self.login, text="use api_keys", command=self._on_cancel_login)
         self.cancel_btn.grid(row=3, column=1)
 
     def _on_cancel_login(self):
@@ -168,19 +168,19 @@ class ChatApplication:
         self.api_window.protocol("WM_DELETE_WINDOW", self.show_login_window)
 
         # 创建一个标签
-        label = Label(self.api_window, text="请输入您的api_key：")
+        label = Label(self.api_window, text="Please enter your api_key：")
 
         # 创建一个输入框
         self.api_entry = Entry(self.api_window)
 
-        button = Button(self.api_window, text="确定", command=self.on_api_confirm)
+        button = Button(self.api_window, text="Sure", command=self.on_api_confirm)
 
         # 将标签和输入框放置在窗口上
         label.pack()
         self.api_entry.pack()
         button.pack()
 
-        # 启动窗口的主循环
+        # Start the window's main loop
         self.api_window.mainloop()
 
     def on_api_confirm(self):
@@ -208,7 +208,7 @@ class ChatApplication:
         Show background story window.
         """
         result = tkinter.simpledialog.askstring(
-            title='输入背景故事', prompt='请输入背景故事（或者使用默认的）', initialvalue=self.background,
+            title='Enter backstory', prompt='Please enter a background story (or use the default）', initialvalue=self.background,
             parent=self.window)
         if result:
             self.background = result
@@ -220,7 +220,7 @@ class ChatApplication:
         """
         # self.expired_creds = OpenAI.token_expired()
         tkinter.messagebox.showerror(
-            title="官方API已发布", message="请优先使用api_key方式登录，使用帐号密码有封号风险！")
+            title="Official API has been released", message="Please use the api_key method to log in first, there is a risk of banning the account if you use the account password！")
         self.show_login_window()
 
     def _on_login(self):
@@ -239,7 +239,7 @@ class ChatApplication:
 
     def after_get_token(self, result):
         """
-        Login线程回调函数
+        Login thread callback function
         """
         self.close_toplevel_window()
         if isinstance(result, bool) and result:
@@ -248,11 +248,11 @@ class ChatApplication:
             self.register_storyteller(use_default=False)
         else:
             tkinter.messagebox.showerror(
-                title="获取token失败", message="请检查邮箱和密码。")
+                title="Failed to get token", message="Please check your email and password。")
 
     def check_event(self, callback: Callable):
         """
-        轮询
+        polling
         """
         if self.future.done():
             callback(self.future.result())
@@ -261,7 +261,7 @@ class ChatApplication:
 
     def get_token(self):
         """
-        获取token的进程
+        The process of obtaining token
         """
         try:
             self.open_ai_auth.create_token()
@@ -340,8 +340,8 @@ class ChatApplication:
         After enter <Send>.
         """
         msg = self.msg_entry.get()
-        thread_it(self.start_toplevel_window, "正在获取ChatGPT回复")
-        self._insert_message(msg, "你")
+        thread_it(self.start_toplevel_window, "Getting ChatGPT replies")
+        self._insert_message(msg, "you")
         self.close_toplevel_window()
 
     def _insert_message(self, msg, sender):
